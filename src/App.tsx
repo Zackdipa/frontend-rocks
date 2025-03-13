@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { PokeAPI } from "./pokeapiClient";
 
-
 interface PokemonCard {
   id: number;
   image: string;
@@ -12,7 +11,6 @@ interface PokemonCard {
 async function fetchData(): Promise<PokemonCard[]> {
   const data = await PokeAPI.getPokemonsList();
 
-  const pokemon = await PokeAPI.getPokemonByName(data.results[0].name);
   const pokemons = await Promise.all(
      data.results.map((pokemon) => {
     return PokeAPI.getPokemonByName(pokemon.name);
