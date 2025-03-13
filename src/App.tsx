@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { PokeAPI } from "./pokeapiClient";
-import { Pokemon } from "pokeapi-js-wrapper";
+
 
 interface PokemonCard {
   id: number;
@@ -9,10 +9,28 @@ interface PokemonCard {
   types: string[];
 }
 
-async function fetchData(): Promise <string[]> {
+async function fetchData(): Promise<PokemonCard[]> {
   const data = await PokeAPI.getPokemonsList();
-  return data.results.map(item => item.name);
+
+  const pokemon = await PokeAPI.getPokemonByName(data.results[0].name);
+  const pokemons = await Promise.all(
+     data.results.map((pokemon) => {
+    return PokeAPI.getPokemonByName(pokemon.name);
+    })
+  );
+
+  return pokemons.map ((pokemon) => {
+    return {
+      id: pokemon.id,
+      name: pokemon.name,
+      image: pokemon.sprites.other["official-artwork"].front_default ?? "",
+      types: pokemon.types.map((t) => t.type.name),
+    };
+
+   
+  });
 }
+
 const typeColors: { [key: string]: string } = {
   fire: "bg-red-500",
   water: "bg-blue-500",
@@ -33,8 +51,6 @@ const Card = (props: PokemonCard) => {
              })}
             </div>
           </div>
-
- 
 }
 
 export const App = () => {
@@ -44,10 +60,10 @@ export const App = () => {
     fetchData().then((result) => {
       setData(
         result.map((item) => ({
-          id: 1,
-          name: item,
-          image: item,
-          types: [item],
+          id: item.id,
+          name: item.name,
+          image: item.image,
+          types: item.types,
         }))
       );
     });
