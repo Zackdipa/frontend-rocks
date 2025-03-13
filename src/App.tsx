@@ -1,53 +1,87 @@
-import { useEffect, useState } from "react";
-import { Link, useParams } from "react-router";
 
-export const Detail = () => {
-  const { id } = useParams ();
-  return <div>Dettaglio: {id}</div>
+interface PokemonCard {
+  id: number;
+  image: string;
+  name: string;
+  types: string[];
 }
 
+const data = [
+  {
+    id: 1,
+    name: "Geodude",
+    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+    types: ["fire", "poison"]
+  },
+  {
+    id: 2,
+    name: "Ivysaur",
+    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png",
+    types: ["fire", "water"]
+  },
+  {
+    id: 4,
+    name: "Charmander",
+    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
+    types: ["fire", "water"]
+  },
+  {
+    id: 7,
+    name: "Squirtle",
+    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
+    types: ["fire", "poison"]
+  },
+  {
+    id: 4,
+    name: "Geodude",
+    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+    types: ["fire", "water"]
+  },
+  {
+    id: 5,
+    name: "Geodude",
+    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
+    types: ["fire", "water"]
+  },
+  
+]
+const typeColors: { [key: string]: string } = {
+  fire: "bg-red-500",
+  water: "bg-blue-500",
+  poison: "bg-purple-500"
+}; 
+function getTypeColor(type: string) {
+  const color = typeColors[type];
+  return color;
+}
+
+const Card = (props: PokemonCard) => {
+  return  <div className="bg-white w-2xs">
+            {props.id} - {props.name}
+            <img src = {props.image}/>
+            <div className="flex flex-wrap gap-4 p-4">
+              {props.types.map((type) => {
+              return <div className={`p-4 ${getTypeColor(type)}`}>{type}</div>
+             })}
+            </div>
+          </div>
+
+ 
+}
 
 export const App = () => {
-  const [count, setCount] = useState(0);
-  const [title, setTitle] = useState("Anthony Edwards");
-  
-  useEffect (() => {
-    if (count === 4) {
-      setTitle("Valore 4 raggiunto")
-    }
-  }, [count])
-
   return (
-    <div className="h-dvh flex flex-col items-center justify-center">
-      <div className="bg-white p-8 rounded-md shadow-lg">
-        <h1 className="text-center font-bold text-3xl text-blue-400 mb-4">
-          {title}
-        </h1>
-
-        <h2 className="text-center font-bold text-xl mb-6">Vite + React</h2>
-
-        <div className="flex flex-col items-center space-y-4">
-          <button
-            className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md cursor-pointer hover:bg-blue-600 transition-colors"
-            onClick={() => setCount((count) => count + 1)}
-          >
-            Hai premuto il pulsante {count} {count === 1 ? "volta" : "volte"}
-          </button>
-
-          <button
-              className="bg-blue-500 text-white px-4 py-2 rounded-md shadow-md cursor-pointer hover:bg-blue-600 transition-colors"
-              onClick={() => setTitle("Charizard")}
-          >
-            Cambia
-          </button>
-
-          <Link to = "/frontend-rocks/dettaglio/1">Link al dettaglio</Link>
-
-          <p className="text-center">
-            Modifica <code>src/App.tsx</code> e salva per testare l'hot reload
-          </p>
-        </div>
-      </div>
+  <div>
+    <div className="flex flex-wrap gap-4 p-4">
+      {data.map ((item) => {
+        return <Card id={item.id} name={item.name} image={item.image} types={item.types} />
+      })}
     </div>
+  </div>
   );
+};
+
+export const Detail = () => {
+  return null
 }
+
