@@ -1,3 +1,6 @@
+import { useEffect, useState } from "react";
+import { PokeAPI } from "./pokeapiClient";
+import { Pokemon } from "pokeapi-js-wrapper";
 
 interface PokemonCard {
   id: number;
@@ -6,45 +9,10 @@ interface PokemonCard {
   types: string[];
 }
 
-const data = [
-  {
-    id: 1,
-    name: "Geodude",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-    types: ["fire", "poison"]
-  },
-  {
-    id: 2,
-    name: "Ivysaur",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/2.png",
-    types: ["fire", "water"]
-  },
-  {
-    id: 4,
-    name: "Charmander",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/4.png",
-    types: ["fire", "water"]
-  },
-  {
-    id: 7,
-    name: "Squirtle",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/7.png",
-    types: ["fire", "poison"]
-  },
-  {
-    id: 4,
-    name: "Geodude",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-    types: ["fire", "water"]
-  },
-  {
-    id: 5,
-    name: "Geodude",
-    image: "https://raw.githubusercontent.com/PokeAPI/sprites/master/sprites/pokemon/other/official-artwork/1.png",
-    types: ["fire", "water"]
-  },
-  
-]
+async function fetchData(): Promise <string[]> {
+  const data = await PokeAPI.getPokemonsList();
+  return data.results.map(item => item.name);
+}
 const typeColors: { [key: string]: string } = {
   fire: "bg-red-500",
   water: "bg-blue-500",
@@ -59,7 +27,7 @@ const Card = (props: PokemonCard) => {
   return  <div className="bg-white w-2xs">
             {props.id} - {props.name}
             <img src = {props.image}/>
-            <div className="flex flex-wrap gap-4 p-4">
+            <div className="flex justify-center gap-4 p-4">
               {props.types.map((type) => {
               return <div className={`p-4 ${getTypeColor(type)}`}>{type}</div>
              })}
@@ -70,6 +38,21 @@ const Card = (props: PokemonCard) => {
 }
 
 export const App = () => {
+  const [data, setData] = useState<PokemonCard[]>([]);
+
+  useEffect(() => {
+    fetchData().then((result) => {
+      setData(
+        result.map((item) => ({
+          id: 1,
+          name: item,
+          image: item,
+          types: [item],
+        }))
+      );
+    });
+  }, []);
+
   return (
   <div>
     <div className="flex flex-wrap gap-4 p-4">
